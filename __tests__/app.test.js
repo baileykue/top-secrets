@@ -33,4 +33,21 @@ describe('top-secrets routes', () => {
 
     expect(res.body).toEqual({ message: 'You have been signed in!', user });
   });
+
+  it('signs OUT the current user', async () => {
+    const agent = request.agent(app);
+
+    await UserService.create({
+      username: 'charlie',
+      password: 'lovemesomeskittles',
+    });
+
+    await agent
+      .post('/api/v1/users/sessions')
+      .send({ username: 'charlie', password: 'lovemesomeskittles' });
+
+    const res = await agent.delete('/api/v1/users/sessions');
+
+    expect(res.body).toEqual({ message: 'You have been signed out!' });
+  });
 });
