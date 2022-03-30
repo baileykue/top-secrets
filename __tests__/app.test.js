@@ -50,4 +50,23 @@ describe('top-secrets routes', () => {
 
     expect(res.body).toEqual({ message: 'You have been signed out!' });
   });
+
+  it('allows a signed in user to view secrets', async () => {
+    const agent = request.agent(app);
+
+    await UserService.create({
+      username: 'charlie',
+      password: 'lovemesomeskittles',
+    });
+
+    let res = await agent.get('/api/v1/secrets');
+    expect(res.status).toEqual(401);
+
+    await agent
+      .post('/api/v1/users/sessions')
+      .send({ username: 'charlie', password: 'lovemesomeskittles' });
+
+    res = await agent.get('/api/v1/secrets');
+    expect(res.status).toEqual(200);
+  });
 });
