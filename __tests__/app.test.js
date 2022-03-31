@@ -69,4 +69,33 @@ describe('top-secrets routes', () => {
     res = await agent.get('/api/v1/secrets');
     expect(res.status).toEqual(200);
   });
+
+  it('should allow a signed in user to add a secret', async () => {
+    const agent = request.agent(app);
+
+    await UserService.create({
+      username: 'charlie',
+      password: 'lovemesomeskittles',
+    });
+
+    let res = await agent
+      .post('/api/v1/users/sessions')
+      .send({ username: 'charlie', password: 'lovemesomeskittles' });
+
+    expect(res.status).toEqual(200);
+
+    res = await agent.post('/api/v1/secrets/').send({
+      title: 'hello world',
+      description: 'existance is pain',
+      userId: '1',
+    });
+
+    expect(res.body).toEqual({
+      id: expect.any(String),
+      title: 'hello world',
+      description: 'existance is pain',
+      userId: '1',
+      createdAt: expect.any(String),
+    });
+  });
 });
