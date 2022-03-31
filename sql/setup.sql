@@ -14,3 +14,9 @@ CREATE TABLE secrets (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
   user_id BIGINT REFERENCES users(id)
 );
+
+INSERT INTO
+  secrets (title, description)
+VALUES
+  ('Hello, freinds!', '65 degrees eating crackers with cheese'),
+  ('Making coffee', 'gots to get that bean water');
